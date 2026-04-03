@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music-CRS Challenge 2026</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <main class="page">
+
+    <header class="page-header">
+      <p class="eyebrow">RecSys Challenge 2026</p>
+      <h1>Conversational Music<br>Recommendation</h1>
+      <p class="subtitle">Co-located with <a href="https://recsys.acm.org/recsys26/" target="_blank">ACM RecSys 2026</a>
+      </p>
+    </header>
+
+    <hr />
+
+    <section class="md-section">
+      <h2>About</h2>
+      <p>The <strong>Music Conversational Recommendation Challenge (Music-CRS)</strong> is a global research competition
+        bridging Natural Language Processing and Recommender Systems. Participants build systems that engage in
+        multi-turn conversations about music, recommend relevant tracks, and generate natural language responses.</p>
+      <p>The challenge uses <strong>TalkPlayData-Challenge</strong>, a large-scale synthetic multi-turn dialogue dataset
+        grounded in real music listening histories, with pre-extracted multimodal track and user embeddings provided.
+      </p>
+
+      <h3>Organizing Committee</h3>
+      <ul>
+        <li>Seungheon Doh — KAIST, South Korea</li>
+        <li>Sergio Oramas — Pandora/SiriusXM</li>
+        <li>Bruno Sguerra — Deezer Research</li>
+        <li>Abhinav Bohra — Amazon</li>
+        <li>Claudio Pomo — Politecnico di Bari, Italy</li>
+        <li>Francesco Barile — Maastricht University, Netherlands</li>
+      </ul>
+
+      <h2>Resources</h2>
+      <ul>
+        <li>Train/Development Dataset: <a href="https://github.com/music-crs/talkplaydata-challenge"
+            target="_blank">https://github.com/music-crs/talkplaydata-challenge</a></li>
+        <li>Blind Dataset A (will be released after the challenge): <a
+            href="https://huggingface.co/datasets/talkpl-ai/TalkPlayData-Challenge-Blind-A"
+            target="_blank">https://huggingface.co/datasets/talkpl-ai/TalkPlayData-Challenge-Blind-A</a></li>
+        <li>Blind Dataset B (will be released after the challenge): <a href="#" target="_blank">#</a></li>
+        <li>Baseline Code: <a href="https://github.com/nlp4musa/music-crs-baselines"
+            target="_blank">https://github.com/nlp4musa/music-crs-baselines</a></li>
+        <li>Evaluation Code: <a href="https://github.com/nlp4musa/music-crs-evaluator"
+            target="_blank">https://github.com/nlp4musa/music-crs-evaluator</a></li>
+      </ul>
+    </section>
+
+
+    <hr />
+
+    <section class="md-section">
+      <h2>Proposed Timeline (2026)</h2>
+      <table class="timeline-table">
+        <tbody>
+          <tr class="timeline-past">
+            <td class="tl-date">3 April</td>
+            <td class="tl-event">Website published.</td>
+          </tr>
+          <tr>
+            <td class="tl-date">10 April</td>
+            <td class="tl-event">Dataset release (including Blind evaluation dataset A).</td>
+          </tr>
+          <tr>
+            <td class="tl-date">10 April</td>
+            <td class="tl-event">Submission system and leaderboard go live. (Blind Dataset A)</td>
+          </tr>
+          <tr>
+            <td class="tl-date">10 June</td>
+            <td class="tl-event">Blind evaluation dataset B release.</td>
+          </tr>
+          <tr>
+            <td class="tl-date">25 June</td>
+            <td class="tl-event">End of the challenge. Participants need to submit inference results of Blind Dataset B.
+            </td>
+          </tr>
+          <tr>
+            <td class="tl-date">25 June</td>
+            <td class="tl-event">Final Leaderboard Released (Blind Dataset B).</td>
+          </tr>
+          <tr>
+            <td class="tl-date">30 June</td>
+            <td class="tl-event">Winners announcement. EasyChair opens for paper submissions.</td>
+          </tr>
+          <tr>
+            <td class="tl-date">7–12 July</td>
+            <td class="tl-event">Paper submission deadline.</td>
+          </tr>
+          <tr>
+            <td class="tl-date">September</td>
+            <td class="tl-event">RecSys Challenge Workshop at ACM RecSys 2026.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <hr />
+
+    <section class="md-section actions-section">
+      <label class="terms-checkbox terms-checkbox--disabled">
+        <input type="checkbox" id="termsAgree" disabled />
+        I have read and agree to the <a href="terms.html" target="_blank">Terms and Conditions</a>
+      </label>
+      <a class="btn-register disabled" aria-disabled="true" tabindex="-1">Register Now</a>
+      <p class="register-footnote">* Registration opens on April 10, 2026.</p>
+    </section>
+
+  </main>
+
+  <!-- MODAL: REGISTER -->
+  <div id="registerModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+      <div class="modal-header">
+        <h2>Register Your Team</h2>
+        <p>Music-CRS Challenge 2026</p>
+      </div>
+
+      <form id="registerForm" class="reg-form" onsubmit="handleRegister(event)">
+        <div class="form-section">
+          <h3>Team</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Team Name <span class="req">*</span></label>
+              <input type="text" placeholder="e.g. MusicMinds" required />
+            </div>
+            <div class="form-group">
+              <label>Team Size <span class="req">*</span></label>
+              <select required>
+                <option value="">Select</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Institution / Organization <span class="req">*</span></label>
+            <input type="text" placeholder="e.g. MIT, Google Research" required />
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" /> Register as an Academic Team (≥50% from academic institution)</label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Team Leader</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name <span class="req">*</span></label>
+              <input type="text" placeholder="First name" required />
+            </div>
+            <div class="form-group">
+              <label>Last Name <span class="req">*</span></label>
+              <input type="text" placeholder="Last name" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Official Email <span class="req">*</span></label>
+            <input type="email" placeholder="you@institution.edu" required />
+          </div>
+          <div class="form-group">
+            <label>Country <span class="req">*</span></label>
+            <select required>
+              <option value="">Select country</option>
+              <option>United States</option>
+              <option>United Kingdom</option>
+              <option>Germany</option>
+              <option>France</option>
+              <option>China</option>
+              <option>Japan</option>
+              <option>South Korea</option>
+              <option>Canada</option>
+              <option>Australia</option>
+              <option>India</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Agreement</h3>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" required /> I have read and agree to the <a href="terms.html"
+                target="_blank">Terms and Conditions</a> <span class="req">*</span></label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" required /> I consent to the processing of my personal data as described in
+              the Terms <span class="req">*</span></label>
+          </div>
+          <div class="form-group checkbox-group">
+            <label><input type="checkbox" required /> I confirm I have no conflict of interest with the challenge
+              organizers <span class="req">*</span></label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="closeModal('registerModal')">Cancel</button>
+          <button type="submit" class="btn-submit">Submit Registration</button>
+        </div>
+      </form>
+
+      <div id="reg-success" class="reg-success hidden">
+        <p class="success-mark">&#10003;</p>
+        <h3>Registration Submitted</h3>
+        <p>Your team will be manually reviewed. Expect a confirmation email within 2–3 business days.</p>
+        <button class="btn-submit" onclick="closeModal('registerModal')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal(id) {
+      document.getElementById(id).classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+      o.addEventListener('click', e => { if (e.target === o) closeModal(o.id); });
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape')
+        document.querySelectorAll('.modal-overlay.active').forEach(m => closeModal(m.id));
+    });
+    function handleRegister(e) {
+      e.preventDefault();
+      document.getElementById('registerForm').classList.add('hidden');
+      document.getElementById('reg-success').classList.remove('hidden');
+    }
+  </script>
+</body>
+
+</html>
