@@ -110,10 +110,16 @@ tr:last-child td { border-bottom: none; }
 /* ── Actions ── */
 .actions-section {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+.action-buttons {
+  display: flex;
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
-  padding-top: 4px;
 }
 
 .btn-register {
@@ -396,6 +402,9 @@ tr:last-child td { border-bottom: none; }
   background: #b0c4de;
   pointer-events: none;
   cursor: not-allowed;
+}
+.btn-codabench {
+  background: #6e6e73;
 }
 .terms-checkbox--disabled {
   opacity: 0.45;
