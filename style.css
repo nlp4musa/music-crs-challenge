@@ -393,6 +393,15 @@ tr:last-child td { border-bottom: none; }
   cursor: pointer;
   accent-color: #0071e3;
 }
+.terms-notice {
+  font-size: 0.75rem;
+  color: #8e8e93;
+  margin-bottom: 8px;
+}
+.terms-notice a {
+  color: #0071e3;
+  text-decoration: underline;
+}
 .register-footnote {
   font-size: 0.8rem;
   color: #8e8e93;
