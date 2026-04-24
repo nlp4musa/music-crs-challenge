@@ -453,6 +453,41 @@ tr:last-child td { border-bottom: none; }
   color: #8e8e93;
 }
 
+/* ── Footer ── */
+.site-footer {
+  border-top: 1px solid #d2d2d7;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.footer-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #8e8e93;
+  margin-bottom: 20px;
+}
+
+.footer-logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.footer-logos img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.footer-logos img:nth-child(1),
+.footer-logos img:nth-child(2) {
+  height: 60px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 560px) {
   .form-row { grid-template-columns: 1fr; }
