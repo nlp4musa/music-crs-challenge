@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial — Music-CRS Challenge 2026</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #000;
+      margin: 24px 0;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+    .resource-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border: 1px solid #d2d2d7;
+      border-radius: 10px;
+      margin-top: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .resource-card:hover {
+      border-color: #0071e3;
+      box-shadow: 0 2px 12px rgba(0,113,227,.12);
+      text-decoration: none;
+    }
+    .resource-card-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .resource-card-text strong {
+      display: block;
+      font-size: 0.95rem;
+      color: #1d1d1f;
+    }
+    .resource-card-text span {
+      font-size: 0.82rem;
+      color: #6e6e73;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #6e6e73;
+      margin-bottom: 32px;
+    }
+    .back-link:hover { color: #0071e3; text-decoration: none; }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <a href="index.html" class="back-link">← Back to Challenge</a>
+
+    <header class="page-header">
+      <p class="eyebrow">RecSys Challenge 2026</p>
+      <h1>Tutorial</h1>
+      <p class="subtitle">Getting started with the Music-CRS Challenge</p>
+    </header>
+
+    <hr />
+
+    <section class="md-section">
+      <h2>Tutorial Video</h2>
+      <p>Watch the walkthrough below to learn how to participate in the challenge, understand the dataset, and run the baseline system.</p>
+
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube.com/embed/5Sv6C8DA1Os"
+          title="Music-CRS Challenge 2026 Tutorial"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <hr />
+
+    <section class="md-section">
+      <h2>Slides</h2>
+      <p>The presentation slides from the tutorial are available below.</p>
+
+      <a
+        class="resource-card"
+        href="https://docs.google.com/presentation/d/130siaipq5mWDTWNp_SJJuXni9SaSaj51Mb75hgRuWrg/edit?usp=sharing"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="resource-card-icon">🗂️</span>
+        <div class="resource-card-text">
+          <strong>Music-CRS Challenge 2026 — Tutorial Slides</strong>
+          <span>Google Slides · Open in a new tab</span>
+        </div>
+      </a>
+    </section>
+
+  </main>
+
+</body>
+
+</html>

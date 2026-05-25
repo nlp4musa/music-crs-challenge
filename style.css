@@ -415,6 +415,9 @@ tr:last-child td { border-bottom: none; }
 .btn-codabench {
   background: #6e6e73;
 }
+.btn-tutorial {
+  background: #6e6e73;
+}
 .terms-checkbox--disabled {
   opacity: 0.45;
   cursor: not-allowed;
