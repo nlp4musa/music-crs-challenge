@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Final leaderboard for the Music-CRS Challenge 2026." />
+  <title>Final Results — Music-CRS Challenge 2026</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main class="results-page">
+    <a class="back-link" href="index.html">← Back to challenge</a>
+
+    <header class="results-header">
+      <p class="eyebrow">Music-CRS Challenge 2026</p>
+      <h1>Final Results</h1>
+      <p class="subtitle">Final leaderboard ranked by Composite Score.</p>
+    </header>
+
+    <section class="distribution-section" aria-labelledby="distribution-title">
+      <div class="distribution-heading">
+        <div>
+          <p class="section-kicker">Score overview</p>
+          <h2 id="distribution-title">Metric distributions</h2>
+        </div>
+        <p id="distribution-track-label" class="distribution-track-label">All teams</p>
+      </div>
+      <div id="distribution-grid" class="distribution-grid"></div>
+    </section>
+
+    <section class="leaderboard-section" aria-labelledby="leaderboard-title">
+      <div class="leaderboard-heading">
+        <div>
+          <h2 id="leaderboard-title">Blind-Dataset-B</h2>
+          <p id="results-summary" class="results-summary" aria-live="polite">Loading results…</p>
+        </div>
+        <span class="final-badge">Final</span>
+      </div>
+
+      <div class="track-tabs" role="tablist" aria-label="Leaderboard track">
+        <button class="track-tab active" id="tab-all" type="button" role="tab" aria-selected="true" data-track="all">All</button>
+        <button class="track-tab" id="tab-academic" type="button" role="tab" aria-selected="false" data-track="academic">Academic</button>
+        <button class="track-tab" id="tab-industry" type="button" role="tab" aria-selected="false" data-track="industry">Industry</button>
+      </div>
+
+      <div class="leaderboard-table-wrap" tabindex="0" role="region" aria-label="Blind-Dataset-B results table" aria-live="polite">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th scope="col" class="rank-column"><span class="sr-only">Rank</span>#</th>
+              <th scope="col">Team ID</th>
+              <th scope="col" class="track-column">Type</th>
+              <th scope="col" class="numeric-column score-column sortable-column" aria-sort="descending"><button class="sort-button active" type="button" data-sort="Composite Score">Composite<br />Score <span class="sort-indicator" aria-hidden="true">↓</span></button></th>
+              <th scope="col" class="numeric-column sortable-column"><button class="sort-button" type="button" data-sort="nDCG@20">nDCG@20 <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+              <th scope="col" class="numeric-column sortable-column"><button class="sort-button" type="button" data-sort="Catalog Diversity">Catalog<br />Diversity <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+              <th scope="col" class="numeric-column sortable-column"><button class="sort-button" type="button" data-sort="Lexical Diversity">Lexical<br />Diversity <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+              <th scope="col" class="numeric-column sortable-column"><button class="sort-button" type="button" data-sort="LLM-as-a-Judge">LLM-as-a-<br />Judge <span class="sort-indicator" aria-hidden="true">↕</span></button></th>
+              <th scope="col" class="resource-column">Paper</th>
+              <th scope="col" class="resource-column">Code</th>
+              <th scope="col" class="resource-column">Hugging Face</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <tr>
+              <td class="loading-cell" colspan="11">Loading leaderboard…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="scroll-hint">Scroll horizontally to see all metrics on smaller screens.</p>
+      <p id="results-error" class="results-error" hidden>
+        The leaderboard could not be loaded. Please serve this site through a web server and try again.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-label">Sponsored by</p>
+    <div class="footer-logos">
+      <img src="static/logo1.png" alt="Sponsor 1" />
+      <img src="static/logo2.png" alt="Sponsor 2" />
+      <img src="static/logo3.png" alt="Sponsor 3" />
+    </div>
+  </footer>
+
+  <script>
+    const displayedColumns = [
+      "Team ID",
+      "Composite Score",
+      "nDCG@20",
+      "Catalog Diversity",
+      "Lexical Diversity",
+      "LLM-as-a-Judge",
+      "Code",
+      "Huggingface",
+      "Paper"
+    ];
+
+    const trackLabels = {
+      all: "All",
+      academic: "Academic",
+      industry: "Industry"
+    };
+
+    let allResults = [];
+    let trackIndexes = {};
+    let activeTrack = "all";
+    let activeSort = "Composite Score";
+    let sortDirection = "descending";
+    const distributionMetrics = [
+      { key: "nDCG@20", label: "nDCG@20", color: "blue" },
+      { key: "Catalog Diversity", label: "Catalog Diversity", color: "purple" },
+      { key: "Lexical Diversity", label: "Lexical Diversity", color: "green" },
+      { key: "LLM-as-a-Judge", label: "LLM-as-a-Judge", color: "orange" }
+    ];
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let value = "";
+      let inQuotes = false;
+
+      for (let index = 0; index < text.length; index += 1) {
+        const character = text[index];
+
+        if (character === '"') {
+          if (inQuotes && text[index + 1] === '"') {
+            value += '"';
+            index += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (character === "," && !inQuotes) {
+          row.push(value.trim());
+          value = "";
+        } else if ((character === "\n" || character === "\r") && !inQuotes) {
+          if (character === "\r" && text[index + 1] === "\n") index += 1;
+          row.push(value.trim());
+          if (row.some((cell) => cell !== "")) rows.push(row);
+          row = [];
+          value = "";
+        } else {
+          value += character;
+        }
+      }
+
+      if (value || row.length) {
+        row.push(value.trim());
+        rows.push(row);
+      }
+
+      const headers = rows.shift().map((header) => header.replace(/^\uFEFF/, ""));
+      return rows.map((cells) => Object.fromEntries(headers.map((header, index) => [header, cells[index] || ""])));
+    }
+
+    function metricCell(value, emphasis = false) {
+      const cell = document.createElement("td");
+      cell.className = `numeric-column metric${emphasis ? " composite-value" : ""}`;
+      const number = Number(value);
+      cell.textContent = Number.isFinite(number) ? number.toFixed(4) : "—";
+      return cell;
+    }
+
+    function resourceCell(value, label) {
+      const cell = document.createElement("td");
+      cell.className = "resource-column";
+      const cleanedValue = String(value ?? "").trim();
+
+      if (!cleanedValue || cleanedValue.toLowerCase() === "n/a") {
+        cell.innerHTML = '<span class="unavailable" aria-label="Not available">—</span>';
+        return cell;
+      }
+
+      const href = /^https?:\/\//i.test(cleanedValue)
+        ? cleanedValue
+        : label === "Hugging Face"
+          ? `https://huggingface.co/${cleanedValue}`
+          : cleanedValue;
+      const link = document.createElement("a");
+      link.className = `resource-link${label === "Code" ? " github-link" : ""}`;
+      link.href = href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      if (label === "Code") {
+        link.innerHTML = `
+          <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 .7a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2.23c-3.22.7-3.9-1.37-3.9-1.37-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.57-.29-5.28-1.29-5.28-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.16 1.18a10.9 10.9 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.4-2.71 5.38-5.29 5.67.42.36.79 1.06.79 2.14v3.18c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .7Z" />
+          </svg>
+        `;
+      } else {
+        link.textContent = label === "Hugging Face" ? "HF ↗" : `${label} ↗`;
+      }
+      link.setAttribute("aria-label", `${label} for this team (opens in a new tab)`);
+      cell.appendChild(link);
+      return cell;
+    }
+
+    function trackCell(uuid) {
+      const cell = document.createElement("td");
+      cell.className = "track-column";
+      let track = "";
+      if (trackIndexes.academic?.has(uuid)) track = "Academic";
+      else if (trackIndexes.industry?.has(uuid)) track = "Industry";
+
+      if (track) {
+        const badge = document.createElement("span");
+        badge.className = `track-badge track-${track.toLowerCase()}`;
+        badge.textContent = track;
+        cell.appendChild(badge);
+      } else {
+        cell.innerHTML = '<span class="unavailable" aria-label="Track not specified">—</span>';
+      }
+      return cell;
+    }
+
+    function renderLeaderboard(rows) {
+      const body = document.getElementById("leaderboard-body");
+      body.replaceChildren();
+
+      rows
+        .filter((row) => row["Team ID"])
+        .sort((a, b) => {
+          const difference = Number(a[activeSort]) - Number(b[activeSort]);
+          return sortDirection === "ascending" ? difference : -difference;
+        })
+        .forEach((row, index) => {
+          const tableRow = document.createElement("tr");
+          if (index < 3) tableRow.classList.add("podium-row", `rank-${index + 1}`);
+          if (["yes", "o"].includes((row["Use Testset"] || "").trim().toLowerCase())) {
+            tableRow.classList.add("under-review");
+            tableRow.dataset.tooltip = "Additional verification is currently in progress.";
+            tableRow.setAttribute("aria-label", `${row["Team ID"]}: Additional verification is currently in progress.`);
+          }
+
+          const rank = document.createElement("td");
+          rank.className = "rank-column";
+          rank.innerHTML = index < 3
+            ? `<span class="rank-medal" aria-label="Rank ${index + 1}">${index + 1}</span>`
+            : `<span class="rank-number">${index + 1}</span>`;
+
+          const team = document.createElement("th");
+          team.scope = "row";
+          team.className = "team-name";
+          team.textContent = row["Team ID"];
+
+          tableRow.append(
+            rank,
+            team,
+            trackCell(row.uuid),
+            metricCell(row["Composite Score"], true),
+            metricCell(row["nDCG@20"]),
+            metricCell(row["Catalog Diversity"]),
+            metricCell(row["Lexical Diversity"]),
+            metricCell(row["LLM-as-a-Judge"]),
+            resourceCell(row.Paper || "", "Paper"),
+            resourceCell(row.Code, "Code"),
+            resourceCell(row.Huggingface, "Hugging Face")
+          );
+          body.appendChild(tableRow);
+        });
+
+      const directionLabel = sortDirection === "ascending" ? "ascending" : "descending";
+      document.getElementById("results-summary").textContent = `${trackLabels[activeTrack]} · ${body.rows.length} teams · ${activeSort}, ${directionLabel}`;
+    }
+
+    function formatChartValue(value, metric) {
+      return metric === "LLM-as-a-Judge" ? value.toFixed(1) : value.toFixed(3);
+    }
+
+    function renderDistributions(rows) {
+      const grid = document.getElementById("distribution-grid");
+      grid.replaceChildren();
+      document.getElementById("distribution-track-label").textContent = `${trackLabels[activeTrack]} teams`;
+
+      distributionMetrics.forEach((metric) => {
+        const values = rows
+          .map((row) => Number(row[metric.key]))
+          .filter(Number.isFinite);
+        const minimum = Math.min(...values);
+        const maximum = Math.max(...values);
+        const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+        const binCount = 6;
+        const span = maximum - minimum || 1;
+        const bins = Array.from({ length: binCount }, () => 0);
+
+        values.forEach((value) => {
+          const index = Math.min(binCount - 1, Math.floor(((value - minimum) / span) * binCount));
+          bins[index] += 1;
+        });
+
+        const largestBin = Math.max(...bins, 1);
+        const card = document.createElement("article");
+        card.className = `distribution-card chart-${metric.color}`;
+        card.innerHTML = `
+          <div class="chart-card-heading">
+            <h3>${metric.label}</h3>
+            <p><span>Avg</span> ${formatChartValue(average, metric.key)}</p>
+          </div>
+          <div class="bar-chart" role="img" aria-label="Distribution of ${metric.label} across ${values.length} teams"></div>
+          <div class="chart-axis"><span>${formatChartValue(minimum, metric.key)}</span><span>${formatChartValue(maximum, metric.key)}</span></div>
+        `;
+
+        const chart = card.querySelector(".bar-chart");
+        bins.forEach((count, index) => {
+          const lower = minimum + (span * index) / binCount;
+          const upper = minimum + (span * (index + 1)) / binCount;
+          const bar = document.createElement("div");
+          bar.className = "distribution-bar";
+          bar.style.height = `${Math.max(count ? 8 : 2, (count / largestBin) * 100)}%`;
+          bar.dataset.tooltip = `${formatChartValue(lower, metric.key)}–${formatChartValue(upper, metric.key)} · ${count} team${count === 1 ? "" : "s"}`;
+          bar.setAttribute("aria-label", bar.dataset.tooltip);
+          chart.appendChild(bar);
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    function updateSortButtons() {
+      document.querySelectorAll(".sort-button").forEach((button) => {
+        const isActive = button.dataset.sort === activeSort;
+        const header = button.closest("th");
+        const indicator = button.querySelector(".sort-indicator");
+        button.classList.toggle("active", isActive);
+        header.removeAttribute("aria-sort");
+        indicator.textContent = isActive ? (sortDirection === "ascending" ? "↑" : "↓") : "↕";
+        if (isActive) header.setAttribute("aria-sort", sortDirection);
+      });
+    }
+
+    function sortBy(metric) {
+      if (activeSort === metric) {
+        sortDirection = sortDirection === "descending" ? "ascending" : "descending";
+      } else {
+        activeSort = metric;
+        sortDirection = "descending";
+      }
+      updateSortButtons();
+      showTrack(activeTrack);
+    }
+
+    function showTrack(track) {
+      activeTrack = track;
+      document.querySelectorAll(".track-tab").forEach((tab) => {
+        const isActive = tab.dataset.track === track;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", String(isActive));
+      });
+
+      const allowedUUIDs = trackIndexes[track];
+      const filteredRows = allowedUUIDs
+        ? allResults.filter((row) => allowedUUIDs.has(row.uuid))
+        : allResults;
+      renderDistributions(filteredRows);
+      renderLeaderboard(filteredRows);
+    }
+
+    function fetchText(path) {
+      return fetch(path).then((response) => {
+        if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+        return response.text();
+      });
+    }
+
+    Promise.all([
+      fetchText("static/results.csv"),
+      fetchText("static/all_uuid.txt"),
+      fetchText("static/academic_track_uuid.txt"),
+      fetchText("static/industry_track_uuid.txt")
+    ])
+      .then(([csvText, allIndex, academicIndex, industryIndex]) => {
+        const rows = parseCSV(csvText);
+        const optionalColumns = new Set(["Paper", "Code", "Huggingface"]);
+        const requiredColumns = displayedColumns.filter((column) => !optionalColumns.has(column));
+        if (!rows.length || requiredColumns.some((column) => !(column in rows[0]))) {
+          throw new Error("The results file is empty or has unexpected columns.");
+        }
+
+        const toIndex = (text) => new Set(text.split(/\r?\n/).map((value) => value.trim()).filter(Boolean));
+        allResults = rows;
+        trackIndexes = {
+          all: toIndex(allIndex),
+          academic: toIndex(academicIndex),
+          industry: toIndex(industryIndex)
+        };
+        showTrack("all");
+
+        document.querySelectorAll(".track-tab").forEach((tab) => {
+          tab.addEventListener("click", () => showTrack(tab.dataset.track));
+        });
+        document.querySelectorAll(".sort-button").forEach((button) => {
+          button.addEventListener("click", () => sortBy(button.dataset.sort));
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+        document.getElementById("leaderboard-body").innerHTML = '<tr><td class="loading-cell" colspan="11">Results unavailable</td></tr>';
+        document.getElementById("results-summary").textContent = "Unable to load results";
+        document.getElementById("results-error").hidden = false;
+      });
+  </script>
+</body>
+
+</html>
