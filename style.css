@@ -542,6 +542,14 @@ tr:last-child td { border-bottom: none; }
   margin-bottom: 12px;
 }
 
+.score-formula {
+  max-width: 760px;
+  margin-bottom: 7px;
+  color: #8e8e93;
+  font-size: .68rem;
+  line-height: 1.5;
+}
+
 .distribution-section {
   margin-bottom: 56px;
 }

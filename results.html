@@ -33,7 +33,7 @@
     <section class="leaderboard-section" aria-labelledby="leaderboard-title">
       <div class="leaderboard-heading">
         <div>
-          <h2 id="leaderboard-title">Blind-Dataset-B</h2>
+          <h2 id="leaderboard-title">Blind-Dataset-B (Final Leaderboard)</h2>
           <p id="results-summary" class="results-summary" aria-live="polite">Loading results…</p>
         </div>
         <span class="final-badge">Final</span>
@@ -44,6 +44,11 @@
         <button class="track-tab" id="tab-academic" type="button" role="tab" aria-selected="false" data-track="academic">Academic</button>
         <button class="track-tab" id="tab-industry" type="button" role="tab" aria-selected="false" data-track="industry">Industry</button>
       </div>
+
+      <p class="score-formula">
+        Composite Score = 0.50 × nDCG@20 + 0.10 × Catalog Diversity + 0.10 × Lexical Diversity + 0.30 × LLM-as-a-Judge.<br />
+        LLM-as-a-Judge scores are normalized before aggregation.
+      </p>
 
       <div class="leaderboard-table-wrap" tabindex="0" role="region" aria-label="Blind-Dataset-B results table" aria-live="polite">
         <table class="leaderboard-table">
