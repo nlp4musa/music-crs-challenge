@@ -961,6 +961,20 @@ tr:last-child td { border-bottom: none; }
   color: #26734d;
 }
 
+.track-baseline {
+  background: #fff0d9;
+  color: #9a5a00;
+}
+
+.leaderboard-table tbody tr.baseline-row,
+.leaderboard-table tbody tr.baseline-row:hover {
+  background: #fffaf2;
+}
+
+.leaderboard-table tbody tr.baseline-row .team-name {
+  color: #8a5100;
+}
+
 .leaderboard-table .metric {
   color: #3d3d3f;
 }

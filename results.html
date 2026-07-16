@@ -43,6 +43,7 @@
         <button class="track-tab active" id="tab-all" type="button" role="tab" aria-selected="true" data-track="all">All</button>
         <button class="track-tab" id="tab-academic" type="button" role="tab" aria-selected="false" data-track="academic">Academic</button>
         <button class="track-tab" id="tab-industry" type="button" role="tab" aria-selected="false" data-track="industry">Industry</button>
+        <button class="track-tab" id="tab-baseline" type="button" role="tab" aria-selected="false" data-track="baseline">Baselines</button>
       </div>
 
       <p class="score-formula">
@@ -106,7 +107,8 @@
     const trackLabels = {
       all: "All",
       academic: "Academic",
-      industry: "Industry"
+      industry: "Industry",
+      baseline: "Baselines"
     };
 
     let allResults = [];
@@ -202,17 +204,25 @@
       return cell;
     }
 
-    function trackCell(uuid) {
+    function getTrack(row) {
+      const value = String(row["Team Track"] || "").trim().toLowerCase();
+      if (value === "baseline") return "baseline";
+      if (value.startsWith("academic")) return "academic";
+      if (value.startsWith("industry")) return "industry";
+      if (trackIndexes.academic?.has(row.uuid)) return "academic";
+      if (trackIndexes.industry?.has(row.uuid)) return "industry";
+      return "";
+    }
+
+    function trackCell(row) {
       const cell = document.createElement("td");
       cell.className = "track-column";
-      let track = "";
-      if (trackIndexes.academic?.has(uuid)) track = "Academic";
-      else if (trackIndexes.industry?.has(uuid)) track = "Industry";
+      const track = getTrack(row);
 
       if (track) {
         const badge = document.createElement("span");
-        badge.className = `track-badge track-${track.toLowerCase()}`;
-        badge.textContent = track;
+        badge.className = `track-badge track-${track}`;
+        badge.textContent = track === "baseline" ? "Baseline" : track[0].toUpperCase() + track.slice(1);
         cell.appendChild(badge);
       } else {
         cell.innerHTML = '<span class="unavailable" aria-label="Track not specified">—</span>';
@@ -232,6 +242,7 @@
         })
         .forEach((row, index) => {
           const tableRow = document.createElement("tr");
+          if (getTrack(row) === "baseline") tableRow.classList.add("baseline-row");
           if (index < 3) tableRow.classList.add("podium-row", `rank-${index + 1}`);
           if (["yes", "o"].includes((row["Use Testset"] || "").trim().toLowerCase())) {
             tableRow.classList.add("under-review");
@@ -253,7 +264,7 @@
           tableRow.append(
             rank,
             team,
-            trackCell(row.uuid),
+            trackCell(row),
             metricCell(row["Composite Score"], true),
             metricCell(row["nDCG@20"]),
             metricCell(row["Catalog Diversity"]),
@@ -267,7 +278,8 @@
         });
 
       const directionLabel = sortDirection === "ascending" ? "ascending" : "descending";
-      document.getElementById("results-summary").textContent = `${trackLabels[activeTrack]} · ${body.rows.length} teams · ${activeSort}, ${directionLabel}`;
+      const entryLabel = activeTrack === "all" ? "entries" : activeTrack === "baseline" ? "baselines" : "teams";
+      document.getElementById("results-summary").textContent = `${trackLabels[activeTrack]} · ${body.rows.length} ${entryLabel} · ${activeSort}, ${directionLabel}`;
     }
 
     function formatChartValue(value, metric) {
@@ -277,7 +289,11 @@
     function renderDistributions(rows) {
       const grid = document.getElementById("distribution-grid");
       grid.replaceChildren();
-      document.getElementById("distribution-track-label").textContent = `${trackLabels[activeTrack]} teams`;
+      document.getElementById("distribution-track-label").textContent = activeTrack === "all"
+        ? "All entries"
+        : activeTrack === "baseline"
+          ? "Baseline systems"
+          : `${trackLabels[activeTrack]} teams`;
 
       distributionMetrics.forEach((metric) => {
         const values = rows
@@ -353,10 +369,9 @@
         tab.setAttribute("aria-selected", String(isActive));
       });
 
-      const allowedUUIDs = trackIndexes[track];
-      const filteredRows = allowedUUIDs
-        ? allResults.filter((row) => allowedUUIDs.has(row.uuid))
-        : allResults;
+      const filteredRows = track === "all"
+        ? allResults
+        : allResults.filter((row) => getTrack(row) === track);
       renderDistributions(filteredRows);
       renderLeaderboard(filteredRows);
     }
